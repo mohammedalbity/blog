@@ -16,7 +16,7 @@ const user = useSanctumUser<User>();
 
 <template class="relative">
   <div
-      class="sticky top-0 flex  w-full max-w-[20rem] min-h-screen flex-col rounded-xl bg-white bg-clip-border p-4 text-gray-700  border">
+      class="sticky top-0 hidden md:flex  w-full max-w-[20rem] min-h-screen flex-col rounded-xl bg-white bg-clip-border p-4 text-gray-700  border">
     <div class="flex justify-center items-center gap-4 p-4 mb-2">
       <h5 class="block font-sans text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">
         {{ user?.name }}

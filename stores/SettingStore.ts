@@ -2,7 +2,6 @@ import type {Setting} from "~/types/types";
 
 export const SettingStore = defineStore('SettingStore', {
     state: () => ({
-        isLoading: false,
         websiteName: '',
         description: '',
         postCount: '',
@@ -36,7 +35,7 @@ export const SettingStore = defineStore('SettingStore', {
             data1.append('postCount', setting.postCount)
             data1.append('logo', setting.logo)
             try {
-                const response = await $fetch<Setting>(`${useRuntimeConfig().public.baseUrl}/api/setting/${setting.id}`, {
+                await $fetch<Setting>(`${useRuntimeConfig().public.baseUrl}/api/setting/${setting.id}`, {
                     method: 'POST',
                     body: data1,
                     headers: getAuthHeaders(),

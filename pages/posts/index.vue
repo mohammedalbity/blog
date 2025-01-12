@@ -40,7 +40,7 @@
       </div>
       <div class="flex justify-end gap-2">
         <Button type="button" label="Cancel" severity="info" @click="visible=!visible"></Button>
-        <Button type="submit" severity="contrast" label="Save"></Button>
+        <Button type="submit" :loading="loading" severity="contrast" label="Save"></Button>
       </div>
     </Form>
   </Dialog>
@@ -86,7 +86,7 @@
       </div>
       <div class="flex justify-end gap-2">
         <Button type="button" label="Cancel" severity="info" @click="visibleEdit = false"></Button>
-        <Button type="submit" severity="contrast" label="Update"></Button>
+        <Button type="submit" :loading="loading" severity="contrast" label="Update"></Button>
       </div>
     </Form>
   </Dialog>
@@ -122,30 +122,23 @@
           </template>
           <Column field="id" header="ID" :sortable="true" filter>
             <template #body="{ data}">
-              <Skeleton v-show="status==='pending'"></Skeleton>
-              <span v-show="status=='success'">{{ data.id }}</span>
+              <span>{{ data.id }}</span>
             </template>
           </Column>
 
           <Column field="title" header="Title" :sortable="true" filter>
             <template #body="{ data}">
-              <Skeleton v-show="status==='pending'"></Skeleton>
-              <span v-show="status=='success'">{{ data.title }}</span>
+              <span>{{ data.title }}</span>
             </template>
           </Column>
           <Column field="description" header="Description" :sortable="true" filter>
             <template #body="{ data}">
-              <Skeleton width="800px" v-show="status==='pending'"></Skeleton>
-              <span v-show="status=='success'">{{ data.description }}</span>
+              <span>{{ data.description }}</span>
             </template>
           </Column>
           <Column header="Action">
             <template #body="{ data }">
-              <div v-show="status==='pending'" class="flex gap-2 items-center">
-                <Skeleton size="3rem" class="mr-2"></Skeleton>
-                <Skeleton size="3rem" class="mr-2"></Skeleton>
-              </div>
-              <div v-show="status=='success'" class="flex gap-2 items-center">
+              <div class="flex gap-2 items-center">
                 <div class="border border-gray-200 rounded-md p-1 outlined">
                   <i class="pi pi-pen-to-square"
                      @click.prevent="openModal(data)"
@@ -178,6 +171,7 @@ import {useConfirm} from "primevue/useconfirm";
 import 'primeicons/primeicons.css'
 import Card from 'primevue/card';
 
+const loading = ref(false);
 const storeCate = CategoryStore()
 
 const searchQuery = ref('');
@@ -249,18 +243,19 @@ const openModal = (post: any) => {
 }
 const handleUpdate = () => {
   storePost.updatePost(editPost.value)
-  if (storePost.messageUpdate !== '' && editPost.value.description && editPost.value.title !== '') {
+  if (storePost.messageUpdate !== '') {
     toast.add({
       severity: 'success',
       detail: storePost.messageUpdate ?? 'Post updated successful',
       summary: 'success',
       life: 3000
     });
-
+    storePost.messageUpdate = null
   } else {
     storePost.errors.forEach((error) => {
       toast.add({severity: 'error', detail: error, summary: 'error', life: 3000});
     })
+    storePost.errors = []
   }
 
 }
@@ -271,11 +266,11 @@ const post = ref({
   image
 })
 const toast = useToast();
-
-const handleSubmit = () => {
-  storePost.addPost(post.value);
-  storePost.message = null
-  if (post.value.description !== '' && post.value.title !== '' && post.value.image !== '') {
+const handleSubmit = async () => {
+  loading.value = true;
+  await storePost.addPost(post.value);
+  loading.value = false;
+  if (storePost.message !== null) {
     toast.add({
       severity: 'success',
       detail: storePost.message ?? 'Post created successful',
@@ -286,10 +281,12 @@ const handleSubmit = () => {
     post.value.description = ''
     post.value.image = null
     display.value = null
+    storePost.message = null
   } else {
     storePost.errors.forEach((error) => {
       toast.add({severity: 'error', detail: error, summary: 'error', life: 3000});
     })
+    storePost.errors = [];
   }
 }
 
@@ -297,7 +294,7 @@ const visible = ref(false);
 const visibleEdit = ref(false);
 const storePost = PostStore()
 
-const {status} = useLazyAsyncData("PostStore", () => storePost.fetchPosts());
+await callOnce(storePost.fetchPosts);
 
 </script>
 <style scoped>

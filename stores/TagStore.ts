@@ -10,7 +10,6 @@ export const TagStore = defineStore('tagStore', {
             total: 0,
         } as Pagination,
         searchQuery: '',
-        isLoading: false,
         message: null,
         errors: [] as any[],
     }),
@@ -19,7 +18,6 @@ export const TagStore = defineStore('tagStore', {
     },
     actions: {
         async fetchTags(page = 1, searchQuery = '') {
-            this.isLoading = true;
             try {
                 const response = await $fetch<responseTagApi>(`${useRuntimeConfig().public.baseUrl}/api/tags`, {
                     method: "get",
@@ -38,8 +36,6 @@ export const TagStore = defineStore('tagStore', {
                 }
             } catch (error) {
                 console.log(error);
-            } finally {
-                this.isLoading = false;
             }
 
         },
@@ -50,6 +46,7 @@ export const TagStore = defineStore('tagStore', {
                     body: tag,
                     headers: getAuthHeaders(),
                 });
+
                 if (response.tag) {
                     this.tags.unshift(response.tag);
                     this.message = response.message
@@ -57,8 +54,8 @@ export const TagStore = defineStore('tagStore', {
             } catch (error: any) {
                 this.errors = Object.values(error.response._data.errors).flat();
             }
-
         },
+
         async updateTag(tag: any) {
             try {
                 const response = await $fetch<Tag>(`${useRuntimeConfig().public.baseUrl}/api/tags/${tag.id}`, {

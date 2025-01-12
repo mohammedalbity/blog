@@ -6,6 +6,15 @@ interface User {
   avatar_url: string;
 }
 
+const isExcludedRoute = (path: any) => {
+  const excludedPatterns = [
+    /^\/login$/,
+    /^\/blog$/,
+    /^\/blog\/.*$/
+  ];
+  return excludedPatterns.some((pattern) => pattern.test(path));
+}
+
 const user = useSanctumUser<User>();
 const items = ref([
   {
@@ -14,15 +23,55 @@ const items = ref([
     href: '/blog',
   },
   {
-    label: 'Posts',
-    icon: 'pi pi-search',
-    href: '/posts',
-  }
+    label: 'Local News',
+    icon: 'pi pi-map',
+    href: '/blog/local',
+  },
+  {
+    label: 'World News',
+    icon: 'pi pi-globe',
+    href: '/blog/world',
+  },
+  {
+    label: 'Sports',
+    icon: 'pi pi-football',
+    href: '/blog/sports',
+  },
+  {
+    label: 'Health',
+    icon: 'pi pi-heart',
+    href: '/blog/health',
+  },
+  {
+    label: 'Business',
+    icon: 'pi pi-briefcase',
+    href: '/blog/business',
+  },
+  {
+    label: 'Technology',
+    icon: 'pi pi-mobile',
+    href: '/blog/technology',
+  },
+  {
+    label: 'Entertainment',
+    icon: 'pi pi-star',
+    href: '/blog/entertainment',
+  },
+  {
+    label: 'Science',
+    icon: 'pi pi-compass',
+    href: '/blog/science',
+  },
+  {
+    label: 'Travel',
+    icon: 'pi pi-send',
+    href: '/blog/travel',
+  },
 ]);
 </script>
 
 <template>
-  <div v-if="route.path!=='/login' && route.path=='/blog'" class="card  sticky top-0 z-10">
+  <div v-if="isExcludedRoute(route.path)" class="card  sticky top-0 z-10">
     <Menubar :model="items" class="!border">
       <!-- القالب الخاص بالعناصر -->
       <template #item="{ item, props }">
@@ -34,9 +83,9 @@ const items = ref([
               <NuxtLink
                   v-if="child.href"
                   :to="child.href"
-                  class="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded"
+                  class="flex items-center gap-1 px-2 py-2 hover:bg-gray-100 rounded"
               >
-                <span :class="child.icon" class="mr-2"/>
+                <span :class="child.icon"/>
                 <span>{{ child.label }}</span>
               </NuxtLink>
             </div>
@@ -46,7 +95,7 @@ const items = ref([
         <NuxtLink
             v-else-if="item.href"
             :to="item.href"
-            class="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded"
+            class="flex items-center gap-1 px-3 py-2 hover:bg-gray-100 rounded"
         >
           <span :class="item.icon" class="mr-2"/>
           <span>{{ item.label }}</span>
@@ -78,15 +127,14 @@ const items = ref([
       <template #end>
         <div class="flex items-center gap-2">
           <InputText placeholder="Search" type="text" class="w-32 sm:w-auto"/>
-          <Avatar class="mr-2" :image="user?.avatar_url ?? '/favicon.ico'" size="large" shape="circle"/>
-          <!--          <Avatar class="w-full h-6 object-cover"  shape="circle"/>-->
+          <Avatar class="mr-2 w-10 h-10" :image="user?.avatar_url ?? '/favicon.ico'" size="large" shape="circle"/>
         </div>
       </template>
     </Menubar>
 
   </div>
   <div class="flex min-h-screen bg-[#F5F6F7]">
-    <div v-if="route.path!=='/login' && route.path!=='/blog'">
+    <div v-if="!isExcludedRoute(route.path)">
       <SidebarContent/>
     </div>
     <div v-if="route.path!=='/login' && route.path=='/blog'" class="flex-1 mb-5 mx-2 md:mx-44 ">

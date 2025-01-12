@@ -1,6 +1,6 @@
 <template>
-  <div class="flex justify-end mt-10">
-    <Button class="bg-black border-black rounded-md" label="Create User" @click="open"/>
+  <div class="flex justify-end mt-10  mb-5">
+    <Button class="bg-black border-black rounded-md" label="Create User" @click="open()"/>
   </div>
   <Dialog v-model:visible="visible" modal header="Create User" class="w-[500px]">
     <Form @submit="handleSubmit">
@@ -185,7 +185,6 @@ const toast = useToast();
 let avatar = ref()
 const display = ref()
 const store = storeUser()
-const loading = ref(true);
 const visibleEdit = ref(false);
 const visible = ref(false);
 const confirmingUserId = ref()
@@ -235,14 +234,13 @@ const user = ref({
 })
 const open = () => {
   visible.value = true;
-  display.value = '';
-  user.value.avatar.value = '';
 }
 
-const handleSubmit = async () => {
+const handleSubmit = () => {
+  store.addUser(user.value)
   store.messages = null
-  console.log('user', user.value)
-  await store.addUser(user.value)
+  display.value = '';
+  user.value.avatar.value = '';
   if (user.value.name !== '' && user.value.email !== '' && user.value.avatar) {
     toast.add({
       severity: 'success',
@@ -262,9 +260,8 @@ const handleSubmit = async () => {
 
   }
 }
-const handleUpdate = async () => {
-
-  await store.updateUser(editUser.value)
+const handleUpdate = () => {
+  store.updateUser(editUser.value)
   if (editUser.value.name !== '' && editUser.value.email !== '' && editUser.value.avatar) {
     toast.add({
       severity: 'success',
@@ -303,7 +300,7 @@ const onPage = (event: any) => {
   store.fetchUsers(Math.ceil(event.first / event.rows) + 1);
 }
 
-useLazyAsyncData("UserStore", () => store.fetchUsers());
+await callOnce(store.fetchUsers)
 
 
 </script>

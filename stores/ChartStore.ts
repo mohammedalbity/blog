@@ -35,7 +35,4 @@ export const useChartStore = defineStore("ChartStore", {
             }
         }
     },
-    persist: {
-        storage: piniaPluginPersistedstate.sessionStorage(),
-    },
 })

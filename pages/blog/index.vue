@@ -1,7 +1,7 @@
 <template class="bg-[#F2F2F2]">
   <!-- Galleria Section -->
 
-<!--  <div class="card mt-5 grid grid-rows-1 container bg-white rounded p-4 md:grid-cols-3 gap-1">
+  <div class="card mt-5 grid grid-rows-1 container bg-white rounded p-4 md:grid-cols-3 gap-1">
     <div class="col-span-1 md:col-span-2">
       <Galleria
           :value="filteredPostsWithImages"
@@ -29,9 +29,9 @@
       </Galleria>
     </div>
     <div class="bg-white flex items-center justify-center border border-gray-300 rounded-md">
-      <span>مساحة إعلانية</span>
+      <span>Advertising space</span>
     </div>
-  </div>-->
+  </div>
 
 
   <!-- Posts Section -->
@@ -47,8 +47,15 @@
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-5 p-4">
       <template v-for="post in filteredPostsWithImages.slice(0,8)" :key="post.id">
-        <Card class="shadow-none border-none">
+        <Card class="shadow-none border-none relative">
           <template #header>
+            <div
+                :class="[
+      'rounded-md px-2 py-1 w-fit text-white absolute left-2 top-2',
+      useCategoryColor(post.category_name)
+    ]">
+              {{ post.category_name }}
+            </div>
             <NuxtImg
                 :src="post.image"
                 :alt="post.title"
@@ -79,7 +86,7 @@
       <template
           v-for="post in sportsPosts"
           :key="post.id">
-        <Card class="shadow-none border-none">
+        <Card class="shadow-none border-none ">
           <template #header>
             <NuxtImg
                 :src="post.image"
@@ -98,10 +105,10 @@
 </template>
 
 <script setup lang="ts">
-import {ref, computed} from 'vue';
-import {PostStore} from '~/stores/PostStore';
-
 // Middleware for authentication
+
+import {useCategoryColor} from "~/composables/CategoryColor";
+
 definePageMeta({
   middleware: ['sanctum:auth'],
 });
@@ -110,7 +117,6 @@ definePageMeta({
 useSeoMeta({
   title: 'Blog - Latest News & Sports',
   description: 'Stay updated with the latest news and sports highlights. Explore trending topics and featured articles.',
-  keywords: 'news, sports, blog, articles, latest news',
   ogTitle: 'Blog - Latest News & Sports',
   ogDescription: 'Discover the latest news and sports articles.',
   ogImage: '/default-thumbnail.jpg', // Adjust default image
@@ -129,7 +135,7 @@ const responsiveOptions = ref([
 
 // Store and filtered data
 const storePost = PostStore();
-const {status} = useLazyAsyncData(() => storePost.fetchPosts());
+await callOnce(storePost.fetchPosts);
 
 const filteredPostsWithImages = computed(() =>
     storePost.posts.filter((post) => post.image !== '')

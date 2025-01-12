@@ -3,7 +3,7 @@
     <Card class="w-full  max-w-md bg-white p-8">
       <template #content>
         <h2 class="text-2xl font-bold text-gray-800 mb-6">Sign in to your account</h2>
-        <Form @submit="formLogin">
+        <Form>
           <!-- Email Input -->
           <div class="mb-4">
             <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
@@ -45,7 +45,7 @@
           </div>
 
           <!-- Sign In Button -->
-          <Button type="submit" label="Sign in" severity="contrast"
+          <Button type="submit" label="Sign in" severity="contrast" :loading="loading" @click="formLogin"
           />
         </Form>
 
@@ -62,6 +62,7 @@
 <script setup lang="ts">
 import {Form} from '@primevue/forms';
 
+const loading = ref(false);
 definePageMeta({
   middleware: ['sanctum:guest'],
 });
@@ -71,9 +72,10 @@ const form = ref({
   password: '',
 });
 const formLogin = async () => {
-
+  loading.value = true;
   if (form.value.email !== '' && form.value.password !== '') {
     await login(form.value);
+    loading.value = false;
   }
 };
 </script>

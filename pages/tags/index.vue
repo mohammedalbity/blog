@@ -13,8 +13,8 @@ const tag = ref({
 })
 
 const storeTag = TagStore()
-const handleSubmit = async () => {
-  await storeTag.addTag(tag.value);
+const handleSubmit = () => {
+  storeTag.addTag(tag.value);
   storeTag.message = null
   if (tag.value.name !== '') {
     toast.add({
@@ -46,7 +46,7 @@ const tagEdit = ref({
 })
 const confirmingTagId = ref();
 const confirm = useConfirm();
-const deleteTag = async (event: any, id: number) => {
+const deleteTag = (event: any, id: number) => {
   confirmingTagId.value = id;
   confirm.require({
     target: event.currentTarget,
@@ -61,8 +61,8 @@ const deleteTag = async (event: any, id: number) => {
       label: 'Delete',
       severity: 'danger'
     },
-    accept: async () => {
-      await storeTag.deleteTag(confirmingTagId.value)
+    accept: () => {
+      storeTag.deleteTag(confirmingTagId.value)
       toast.add({severity: 'info', summary: 'Confirmed', detail: 'Record deleted', life: 3000});
     },
     reject: () => {
@@ -87,7 +87,7 @@ const handleUpdate = () => {
     })
   }
 }
-useAsyncData("TagStore", () => storeTag.fetchTags());
+await callOnce(storeTag.fetchTags);
 const visible = ref(false)
 </script>
 
@@ -133,7 +133,8 @@ const visible = ref(false)
             :totalRecords="storeTag.pagination.total"
             :lazy="true"
             :first="(storeTag.pagination.current_page - 1) * storeTag.pagination.per_page"
-            @page="(event)=> storeTag.fetchTags(Math.ceil(event.first / event.rows) + 1,storeTag.searchQuery)"
+            @page="(event)=> storeTag.fetchTags(Math.ceil(event.first / event.rows) + 1)"
+            :rowsPerPageOptions="[10, 20, 50]"
             stripedRows
         >
           <template #header>
@@ -152,24 +153,18 @@ const visible = ref(false)
           </template>
           <Column field="id" header="ID" :sortable="true" filter>
             <template #body="{data}">
-              <Skeleton v-if="storeTag.isLoading"></Skeleton>
-              <span v-else>{{ data.id }}</span>
+              <span>{{ data.id }}</span>
             </template>
           </Column>
 
           <Column field="name" header="Name" :sortable="true" filter>
             <template #body="{ data}">
-              <Skeleton v-if="storeTag.isLoading"></Skeleton>
-              <span v-else>{{ data.name }}</span>
+              <span>{{ data.name }}</span>
             </template>
           </Column>
           <Column header="Action">
             <template #body="{ data }">
-              <div v-if="storeTag.isLoading" class="flex gap-2 items-center">
-                <Skeleton size="3rem" class="mr-2"></Skeleton>
-                <Skeleton size="3rem" class="mr-2"></Skeleton>
-              </div>
-              <div v-else class="flex gap-2 items-center">
+              <div class="flex gap-2 items-center">
                 <div class="border border-gray-200 rounded-md p-1 outlined">
                   <i class="pi pi-pen-to-square"
                      @click.prevent="openModal(data)"

@@ -24,6 +24,7 @@ export default defineNuxtConfig({
     },
     modules: ['@primevue/nuxt-module', '@pinia/nuxt', '@nuxtjs/color-mode', 'nuxt-auth-sanctum', 'pinia-plugin-persistedstate/nuxt', '@vueuse/nuxt', '@nuxt/image'],
     sanctum: {
+        baseUrl: 'http://formrebeter.test',
         mode: 'token',
         userStateKey: 'sanctum.user.identity',
         redirectIfAuthenticated: false,
@@ -58,7 +59,7 @@ export default defineNuxtConfig({
         },
         options: {
             ripple: true,
-            inputVariant: 'filled',
+            inputVariant: 'outlined',
             theme: {
                 preset: Aura,
                 options: {

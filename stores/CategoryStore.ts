@@ -10,7 +10,6 @@ export const CategoryStore = defineStore('CategoryStore', {
             total: 0,
         } as Pagination,
         searchQuery: '',
-        isLoading: false,
         message: null,
         errors: [] as any[],
     }),
@@ -19,7 +18,6 @@ export const CategoryStore = defineStore('CategoryStore', {
     },
     actions: {
         async fetchCategories(page = 1, searchQuery = '') {
-            this.isLoading = true;
             try {
                 const response = await $fetch<responseCategoryApi>(`${useRuntimeConfig().public.baseUrl}/api/categories`, {
                     method: "get",
@@ -38,8 +36,6 @@ export const CategoryStore = defineStore('CategoryStore', {
                 }
             } catch (error) {
                 console.log(error);
-            } finally {
-                this.isLoading = false;
             }
 
         },
@@ -75,7 +71,7 @@ export const CategoryStore = defineStore('CategoryStore', {
 
 
             } catch (error: any) {
-                this.errors.push(error._data.errors);
+                this.errors = Object.values(error.response._data.errors).flat();
             }
         },
         async deleteCategory(categoryId: any) {

@@ -14,7 +14,7 @@ const setting = ref({
   logo: ref()
 })
 
-const {status} = await useLazyAsyncData('setting', () => store.fetchSettings())
+await callOnce(store.fetchSettings)
 setting.value.description = store.description
 setting.value.postCount = store.postCount
 setting.value.websiteName = store.websiteName
@@ -41,26 +41,21 @@ const handleSubmit = () => {
       <Form @submit="handleSubmit">
         <label for="websiteName" class="font-semibold">websiteName</label>
         <div class="flex gap-4 mb-5">
-          <Skeleton v-show="status=='pending'" animation="wave" height="2.5rem" shape="rectangle"></Skeleton>
-          <InputText id="name" v-show="status=='success'" v-model="setting.websiteName" class="flex-auto"
+          <InputText id="name" v-model="setting.websiteName" class="flex-auto"
                      autocomplete="off"/>
         </div>
 
         <label for="description" class="font-semibold">Description</label>
         <div class="flex gap-4 mb-5">
-          <Skeleton v-show="status=='pending'" height="10rem" animation="wave"></Skeleton>
-          <Textarea id="description" v-show="status=='success'" class="flex-auto" v-model="setting.description" rows="5"
+          <Textarea id="description" class="flex-auto" v-model="setting.description" rows="5"
                     cols="30"/>
         </div>
         <label for="post count" class="font-semibold">post Count</label>
         <div class="flex gap-4 mb-5">
-          <Skeleton v-show="status=='pending'" animation="wave" height="2.5rem" shape="rectangle"></Skeleton>
-          <InputText id="postCount" v-show="status=='idle'" type="number" v-model="setting.postCount"
+          <InputText id="postCount" type="number" v-model="setting.postCount"
                      class="flex-auto" autocomplete="off"/>
         </div>
-        <Skeleton v-show="status=='pending'" animation="wave" height="11rem" width="11rem" shape="rectangle">
-        </Skeleton>
-        <div v-show="status=='success'" class="flex items-center gap-4 mb-8 ">
+        <div class="flex items-center gap-4 mb-8 ">
           <div
               class="border-dotted border-4 flex items-center py-2 px-2 justify-center border-gray-200 rounded-md h-44 w-44">
             <label for="file-upload"

@@ -5,6 +5,7 @@ import {Form} from "@primevue/forms";
 import Dialog from "primevue/dialog";
 import {useToast} from "primevue/usetoast";
 import {useConfirm} from "primevue/useconfirm";
+
 const toast = useToast();
 
 const category = ref({
@@ -12,8 +13,8 @@ const category = ref({
 })
 
 const storeCategory = CategoryStore()
-const handleSubmit = async () => {
-  await storeCategory.addCategory(category.value);
+const handleSubmit = () => {
+  storeCategory.addCategory(category.value);
   storeCategory.message = null
   if (category.value.name !== '') {
     toast.add({
@@ -45,7 +46,7 @@ const categoryEdit = ref({
 })
 const confirmingCategoryId = ref();
 const confirm = useConfirm();
-const deleteCategory = async (event: any, id: number) => {
+const deleteCategory = (event: any, id: number) => {
   confirmingCategoryId.value = id;
   confirm.require({
     target: event.currentTarget,
@@ -60,8 +61,8 @@ const deleteCategory = async (event: any, id: number) => {
       label: 'Delete',
       severity: 'danger'
     },
-    accept: async () => {
-      await storeCategory.deleteCategory(confirmingCategoryId.value)
+    accept: () => {
+      storeCategory.deleteCategory(confirmingCategoryId.value)
       toast.add({severity: 'info', summary: 'Confirmed', detail: 'Record deleted', life: 3000});
     },
     reject: () => {
@@ -70,24 +71,24 @@ const deleteCategory = async (event: any, id: number) => {
   });
 };
 
-const handleUpdate = () => {
-  console.log(categoryEdit.value)
-  storeCategory.updateCategory(categoryEdit.value)
-  if (storeCategory.message !== '') {
+const handleUpdate = async () => {
+  await storeCategory.updateCategory(categoryEdit.value)
+  if (storeCategory.message !== null) {
     toast.add({
       severity: 'success',
       detail: storeCategory.message ?? 'Category updated successful',
       summary: 'success',
       life: 3000
     });
-
+    storeCategory.message = null
   } else {
     storeCategory.errors.forEach((error) => {
       toast.add({severity: 'error', detail: error, summary: 'error', life: 3000});
     })
+    storeCategory.errors = []
   }
 }
-useAsyncData("CategoryStore", () => storeCategory.fetchCategories());
+await callOnce(storeCategory.fetchCategories);
 const visible = ref(false)
 definePageMeta({
   middleware: ['sanctum:auth'],
@@ -112,7 +113,7 @@ definePageMeta({
     </Form>
   </Dialog>
   <!-- Edit Category -->
-  <Dialog v-model:visible="visible" modal header="Edit Post" class="w-fit">
+  <Dialog v-model:visible="visible" modal header="Edit Category" class="w-fit">
     <Form @submit="handleUpdate">
       <label for="name" class="font-semibold">Name</label>
       <div class="flex gap-4 mb-5">
@@ -154,24 +155,18 @@ definePageMeta({
           </template>
           <Column field="id" header="ID" :sortable="true" filter>
             <template #body="{data}">
-              <Skeleton v-if="storeCategory.isLoading"></Skeleton>
-              <span v-else>{{ data.id }}</span>
+              <span>{{ data.id }}</span>
             </template>
           </Column>
 
           <Column field="name" header="Name" :sortable="true" filter>
             <template #body="{ data}">
-              <Skeleton v-if="storeCategory.isLoading"></Skeleton>
-              <span v-else>{{ data.name }}</span>
+              <span>{{ data.name }}</span>
             </template>
           </Column>
           <Column header="Action">
             <template #body="{ data }">
-              <div v-if="storeCategory.isLoading" class="flex gap-2 items-center">
-                <Skeleton size="3rem" class="mr-2"></Skeleton>
-                <Skeleton size="3rem" class="mr-2"></Skeleton>
-              </div>
-              <div v-else class="flex gap-2 items-center">
+              <div class="flex gap-2 items-center">
                 <div class="border border-gray-200 rounded-md p-1 outlined">
                   <i class="pi pi-pen-to-square"
                      @click.prevent="openModal(data)"

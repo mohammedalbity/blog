@@ -1,12 +1,12 @@
 <template>
   <div class="grid grid-cols-3 gap-4  my-10">
     <div class="bg-white font-semibold shadow-sm text-xl border capitalize border-gray-200 rounded-lg">
-      <Skeleton v-show="status==='pending'" height="70px"></Skeleton>
-      <div v-show="status==='success'" class="flex justify-between items-center py-5 px-5 ">
+      <!--      <Skeleton v-show="status==='pending'" height="70px"></Skeleton>-->
+      <div class="flex justify-between items-center py-5 px-5 ">
         Users
         <div>{{ Object.values(chart.chartUser).reduce((acc, value) => acc + value, 0) }}</div>
       </div>
-      <div v-show="status==='success'" class="relative">
+      <div class="relative">
         <svg class="w-8 left-[18px] -top-[85px] absolute" viewBox="0 0 24 24" fill="#000000"
              xmlns="http://www.w3.org/2000/svg">
           <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -29,14 +29,14 @@
       </div>
     </div>
     <div class="bg-white font-semibold shadow-sm text-xl border capitalize border-gray-200 rounded-lg">
-      <Skeleton v-show="status==='pending'" height="70px"></Skeleton>
-      <div v-show="status==='success'" class="flex justify-between items-center  py-5 px-5">
+      <!--      <Skeleton v-show="status==='pending'" height="70px"></Skeleton>-->
+      <div class="flex justify-between items-center  py-5 px-5">
         Posts
         <div>{{ Object.values(chart.chartPost).reduce((acc, value) => acc + value, 0) }}</div>
       </div>
-      <div v-show="status==='success'" class="relative">
-        <svg class="w-8 left-[18px] -top-[85px] absolute" version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg"
-             xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve" fill="#000000">
+      <div class="relative">
+        <svg class="w-8 left-[18px] -top-[85px] absolute" id="_x32_" xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 512 512" xml:space="preserve" fill="#000000">
                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
           <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
               </g>
@@ -48,13 +48,13 @@
       </div>
     </div>
     <div class="bg-white font-semibold shadow-sm text-xl border  capitalize border-gray-200 rounded-lg">
-      <Skeleton v-show="status==='pending'" height="70px"></Skeleton>
-      <div v-show="status==='success'" class="flex justify-between items-center py-5 px-5">
+      <!--      <Skeleton v-show="status==='pending'" height="70px"></Skeleton>-->
+      <div class="flex justify-between items-center py-5 px-5">
         Tags
         <div>{{ Object.values(chart.chartTag).reduce((acc, value) => acc + value, 0) }}</div>
       </div>
 
-      <div v-show="status==='success'" class="relative">
+      <div class="relative">
         <svg class="w-8 left-[18px] -top-[85px] absolute" viewBox="0 0 24 24" fill="none"
              xmlns="http://www.w3.org/2000/svg">
           <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -70,8 +70,8 @@
   </div>
   <Card>
     <template #content>
-      <Skeleton class="w-full" height="28rem" v-show="status==='pending'"></Skeleton>
-      <chart-data v-show="status==='success'" :chartDataInput="chartData1" title="Dashboard Chart"></chart-data>
+      <!--      <Skeleton class="w-full" height="28rem" v-show="status==='pending'"></Skeleton>-->
+      <chart-data :chartDataInput="chartData1" title="Dashboard Chart"></chart-data>
     </template>
   </Card>
 
@@ -91,7 +91,7 @@ const chartData1 = reactive({
   labels: [],
   datasets: []
 });
-const {status} = useLazyAsyncData('ChartData', () => chart.fetchChart())
+await callOnce(chart.fetchChart)
 
 chartData1.labels = [
   ...new Set([
