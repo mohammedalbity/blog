@@ -89,3 +89,6 @@ export const TagStore = defineStore('tagStore', {
     }
 
 })
+if (import.meta.hot) {
+    import.meta.hot.accept(acceptHMRUpdate(TagStore, import.meta.hot))
+}

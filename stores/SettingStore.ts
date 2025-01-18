@@ -1,4 +1,5 @@
 import type {Setting} from "~/types/types";
+import {PostStore} from "~/stores/PostStore";
 
 export const SettingStore = defineStore('SettingStore', {
     state: () => ({
@@ -49,3 +50,6 @@ export const SettingStore = defineStore('SettingStore', {
     },
     persist: piniaPluginPersistedstate.sessionStorage()
 })
+if (import.meta.hot) {
+    import.meta.hot.accept(acceptHMRUpdate(SettingStore, import.meta.hot))
+}

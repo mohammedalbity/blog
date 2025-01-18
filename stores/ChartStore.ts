@@ -1,4 +1,5 @@
 import {defineStore} from "pinia";
+import {PostStore} from "~/stores/PostStore";
 
 export interface Chart {
     post: Record<string, number>;
@@ -36,3 +37,6 @@ export const useChartStore = defineStore("ChartStore", {
         }
     },
 })
+if (import.meta.hot) {
+    import.meta.hot.accept(acceptHMRUpdate(useChartStore, import.meta.hot))
+}

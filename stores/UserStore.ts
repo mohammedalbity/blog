@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import type {Pagination, responseUserApi, User} from "~/types/types";
 import {useToast} from "primevue/usetoast";
+import {PostStore} from "~/stores/PostStore";
 
 export const storeUser = defineStore('storeUser', {
     state: () => ({
@@ -116,3 +117,6 @@ export const storeUser = defineStore('storeUser', {
 
 
 });
+if (import.meta.hot) {
+    import.meta.hot.accept(acceptHMRUpdate(storeUser, import.meta.hot))
+}

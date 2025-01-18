@@ -1,4 +1,5 @@
 import type {Pagination, responseCategoryApi, Category} from "~/types/types";
+import {PostStore} from "~/stores/PostStore";
 
 
 export const CategoryStore = defineStore('CategoryStore', {
@@ -90,3 +91,6 @@ export const CategoryStore = defineStore('CategoryStore', {
     }
 
 })
+if (import.meta.hot) {
+    import.meta.hot.accept(acceptHMRUpdate(CategoryStore, import.meta.hot))
+}

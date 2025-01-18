@@ -19,6 +19,7 @@
     "@primevue/themes": "^4.2.5",
     "@qirolab/nuxt-sanctum-authentication": "^0.1.15",
     "@tanstack/vue-query": "^5.62.16",
+    "@vite-pwa/nuxt": "0.10.6",
     "@vueuse/nuxt": "^12.4.0",
     "chart.js": "^4.4.7",
     "components": "^0.1.0",

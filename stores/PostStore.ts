@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
 import type {Pagination, Post, responsePostApi} from "~/types/types";
+import {TagStore} from "~/stores/TagStore";
 
 
 export const PostStore = defineStore('PostStore', {
@@ -14,6 +15,7 @@ export const PostStore = defineStore('PostStore', {
             message: null,
             messageUpdate: null,
             errors: [] as any[],
+            postDetails: null as any | null,
         }),
         persist: {
             storage: piniaPluginPersistedstate.sessionStorage(),
@@ -41,7 +43,17 @@ export const PostStore = defineStore('PostStore', {
                 } catch (errors: any) {
                 }
             },
+            async fetchPostsDetails(post: string) {
+                const response = await $fetch<Post>(`${useRuntimeConfig().public.baseUrl}/api/posts/${post}`, {
+                    method: 'get',
+                    headers: getAuthHeaders(),
+                })
+                if (response.post) {
+                    this.postDetails = response.post
 
+                }
+
+            },
             async addPost(item
                           :
                           any
@@ -109,3 +121,6 @@ export const PostStore = defineStore('PostStore', {
         }
     })
 ;
+if (import.meta.hot) {
+    import.meta.hot.accept(acceptHMRUpdate(PostStore, import.meta.hot))
+}
