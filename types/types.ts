@@ -9,6 +9,18 @@ export interface Post {
     message: null,
     errors: [],
 }
+export interface Comment {
+    id: number;
+    body: string;
+    username: string;
+    post_id: string;
+    avatar: string;
+    comment: Comment;
+    message: null,
+    errors: [],
+    created_at: string;
+}
+
 
 export interface Tag {
     id: number;
@@ -51,6 +63,10 @@ export interface User {
 
 export interface responsePostApi {
     data: Post[],
+    meta: Meta
+}
+export interface responseCommentApi {
+    comment: Comment[],
     meta: Meta
 }
 

@@ -8,20 +8,25 @@ interface User {
 
 const {$pwa} = useNuxtApp()
 const isExcludedRoute = (path: any) => {
-    const excludedPatterns = [
-        /^\/login$/,   // استبعاد مسار /login
-        /^\/$/,        // استبعاد الصفحة الرئيسية /
-        /^\/\/.*$/,    // استبعاد أي مسار يبدأ بـ //
-        /^\/local$/,
-        /^\/world$/,   // استبعاد مسار /local
-        /^\/sports$/,   // استبعاد مسار /local
-        /^\/health$/,   // استبعاد مسار /local
-        /^\/business$/,   // استبعاد مسار /local
-        /^\/technology$/,   // استبعاد مسار /local
-        /^\/entertainment$/,   // استبعاد مسار /local
-        /^\/science$/,   // استبعاد مسار /local
-        /^\/travel$/,   // استبعاد مسار /local
+    const sections = [
+        "world",
+        "sports",
+        "health",
+        "business",
+        "technology",
+        "entertainment",
+        "science",
+        "travel",
     ];
+
+    const excludedPatterns = [
+        /^\/login$/,
+        /^\/$/,
+        /^\/\/.*$/,
+        /^\/local(\/\d+)?$/,
+        ...sections.map((section) => new RegExp(`^\\/${section}(\\/\\d+)?$`)), // إضافة الأقسام
+    ];
+
     return excludedPatterns.some((pattern) => pattern.test(path));
 };
 

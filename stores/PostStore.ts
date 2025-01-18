@@ -50,7 +50,7 @@ export const PostStore = defineStore('PostStore', {
                 })
                 if (response.post) {
                     this.postDetails = response.post
-
+                    return response.post
                 }
 
             },
