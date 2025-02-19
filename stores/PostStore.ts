@@ -17,9 +17,6 @@ export const PostStore = defineStore('PostStore', {
             errors: [] as any[],
             postDetails: null as any | null,
         }),
-        persist: {
-            storage: piniaPluginPersistedstate.sessionStorage(),
-        },
         actions: {
             async fetchPosts(page = 1, searchQuery = '') {
                 try {

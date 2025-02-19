@@ -1,5 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import Aura from '@primevue/themes/aura';
+import tailwindcss from "@tailwindcss/vite";
+
 
 export default defineNuxtConfig({
     compatibilityDate: '2024-11-01',
@@ -9,10 +11,15 @@ export default defineNuxtConfig({
     pinia: {
         storesDirs: ['./stores/**'],
     },
+    vite: {
+        plugins: [
+            tailwindcss(),
+        ],
+    },
     primevue: {
         autoImport: false,
         components: {
-            include: ['Toast', 'Chart', 'Dialog', 'Select', 'Carousel', 'Menubar', 'ScrollTop', 'SplitButton', 'Galleria', 'Badge', 'UseConfirm', 'Editor', 'Forms', 'UseToast', 'ConfirmPopup', 'Skeleton', 'Column', 'IconField', 'InputIcon', 'DataTable', 'InputText', 'Message', 'Card', 'Image', 'Button', 'Avatar', 'IconFiell'],
+            include: ['Toast', 'Chart', 'Drawer', 'progressspinner', 'Dialog', 'Select', 'Carousel', 'Menubar', 'ScrollTop', 'SplitButton', 'Galleria', 'Badge', 'UseConfirm', 'Editor', 'Forms', 'UseToast', 'ConfirmPopup', 'Skeleton', 'Column', 'IconField', 'InputIcon', 'DataTable', 'InputText', 'Message', 'Card', 'Image', 'Button', 'Avatar', 'IconFiell'],
         },
         options: {
             ripple: true,
@@ -23,18 +30,13 @@ export default defineNuxtConfig({
                     darkModeSelector: '.my-app-dark',
                     cssLayer: {
                         name: 'primevue',
-                        order: 'tailwind-base, primevue, tailwind-utilities'
+                        order: "base, primevue",
                     }
                 }
             }
         }
     },
-    postcss: {
-        plugins: {
-            tailwindcss: {},
-            autoprefixer: {},
-        },
-    },
+
     pwa: {
         strategies: 'generateSW',
         srcDir: 'service-worker',

@@ -86,7 +86,7 @@ const items = ref([
 </script>
 
 <template>
-    <div v-if="$pwa?.isPWAInstalled">
+    <div v-if="!$pwa?.isPWAInstalled">
         <Message :sticky="true">
             The app is not installed yet. Install it now for a better experience!
             <button class="text-blue-800" @click="$pwa?.install()"> `Install App`</button>

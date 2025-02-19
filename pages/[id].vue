@@ -1,3 +1,4 @@
+<!--
 <script setup lang="ts">
 import {useCategoryColor} from "~/composables/CategoryColor";
 
@@ -54,4 +55,84 @@ const sportsPosts = computed(() =>
 
 <style scoped>
 
+</style>-->
+<script setup lang="ts">
+import {useCategoryColor} from "~/composables/CategoryColor";
+import {useRouter} from 'vue-router';
+import {PostStore} from '~/stores/PostStore';
+
+const route = useRouter();
+const storePost = PostStore();
+
+const sportsPosts = computed(() =>
+    storePost.posts.filter(
+        (post) => post.image !== '' && post.category_name === route.currentRoute.value.params.id
+    )
+);
+</script>
+
+<template>
+    <section class="mt-5 bg-white rounded-xl">
+        <div
+                class="text-3xl md:text-4xl lg:text-4xl font-semibold text-left mb-8 bg-gradient-to-r from-green-500 to-green-400 text-white rounded-lg pl-4 py-3">
+            <div class="flex justify-between items-center">
+                <span class="capitalize">Latest {{ route.currentRoute.value.params.id }}</span>
+                <NuxtLink
+                        :to="`/${route.currentRoute.value.params.id}`"
+                        class="rounded-md text-sm px-3 py-2 text-gray-500 hover:text-green-500 transition-colors duration-300">
+                    Show More
+                </NuxtLink>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 p-4">
+            <template v-if="!sportsPosts.length">
+                <p class="col-span-full text-center text-gray-400">No posts available</p>
+            </template>
+
+            <template v-for="post in sportsPosts" :key="post.id">
+                <NuxtLink :to="`/${post.category_name}/${post.id}`" class="block group">
+                    <Card class=" border-none relative transition-transform transform hover:scale-105">
+                        <template #subtitle>
+                            <div
+                                    :class="['rounded-md px-2 py-1 w-fit text-white absolute left-2 top-2', useCategoryColor(post.category_name)]">
+                                {{ post.category_name }}
+                            </div>
+                        </template>
+
+                        <template #header>
+                            <NuxtImg
+                                    :src="post.image"
+                                    :alt="post.title"
+                                    class="h-[244.62px] rounded-md w-full object-cover"
+                                    loading="lazy"
+                            />
+                        </template>
+
+                        <template #title>
+                            {{ post.title }}
+                        </template>
+                    </Card>
+                </NuxtLink>
+            </template>
+        </div>
+    </section>
+</template>
+
+<style scoped>
+.animate-pulse {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
 </style>

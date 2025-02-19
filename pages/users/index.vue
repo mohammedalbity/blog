@@ -1,6 +1,6 @@
 <template>
     <div class="flex justify-end mt-10  mb-5">
-        <Button class="bg-black border-black rounded-md" label="Create User" @click="open()"/>
+        <Button class="!bg-black border-black rounded-md" label="Create User" @click="open()"/>
     </div>
     <Dialog v-model:visible="visible" modal header="Create User" class="w-[500px]">
         <Form @submit="handleSubmit">

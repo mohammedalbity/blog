@@ -94,7 +94,7 @@ const visible = ref(false)
 <template>
     <!--Create Tag  -->
     <div class="flex justify-end mt-10 mb-5">
-        <Button class="bg-black border-black rounded-md" label="Create Tag" @click="openDialog"/>
+        <Button class="!bg-black border-black rounded-md" label="Create Tag" @click="openDialog"/>
     </div>
     <Dialog v-model:visible="visibleDialog" modal header="Create Tag" class="w-fit">
         <Form @submit="handleSubmit">

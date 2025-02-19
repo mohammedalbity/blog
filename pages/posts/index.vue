@@ -1,6 +1,6 @@
 <template>
     <div class="flex justify-end mt-10 mb-5">
-        <Button class="bg-black border-black rounded-md" label="Create Post" @click="open"/>
+        <Button class="!bg-black border-black rounded-md" label="Create Post" @click="open"/>
     </div>
     <Dialog v-model:visible="visible" modal header="Create Post" class="w-fit">
         <Form @submit="handleSubmit">
@@ -9,35 +9,44 @@
                 <InputText id="title" v-model="post.title" class="flex-auto" autocomplete="off"/>
             </div>
 
-            <div class="flex items-center gap-4 mb-8">
+            <div class="flex items-center gap-4 my-2">
                 <Editor v-model="post.description" editorStyle="height: 320px"/>
             </div>
-            <div class="my-2">
-                <Select v-model="post.category_id" :options="storeCate.categories" optionLabel="name"
-                        placeholder="Select a Cate"
-                        class="w-full md:w-56"/>
-            </div>
+
             <div class="flex items-center gap-4 mb-8">
-                <div
-                        class="border-dotted border-4 flex items-center py-2 px-2 justify-center border-gray-200 rounded-md h-44 w-44">
+                <div class="flex-1 border bg-[#F8FAFC] flex items-center h-10  px-2 <!--justify-{{ !display ? 'center': 'start'}}--> border-gray-200 rounded-md w-44">
                     <label for="file-upload"
-                           class="cursor-pointer  text-white px-4 py-2 rounded-md transition">
-                        <Image v-if="display" :src="display" alt="Image" width="300" preview/>
+                           class="cursor-pointer  text-black py-2  rounded-md transition">
+                        <div class="flex items-center gap-2">
+                            <svg v-if="!display" class="w-5" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path d="M12 15L12 2M12 2L15 5.5M12 2L9 5.5" stroke="#1C274C" stroke-width="1.5"
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"></path>
+                                    <path
+                                            d="M8 22.0002H16C18.8284 22.0002 20.2426 22.0002 21.1213 21.1215C22 20.2429 22 18.8286 22 16.0002V15.0002C22 12.1718 22 10.7576 21.1213 9.8789C20.3529 9.11051 19.175 9.01406 17 9.00195M7 9.00195C4.82497 9.01406 3.64706 9.11051 2.87868 9.87889C2 10.7576 2 12.1718 2 15.0002L2 16.0002C2 18.8286 2 20.2429 2.87868 21.1215C3.17848 21.4213 3.54062 21.6188 4 21.749"
+                                            stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path>
+                                </g>
+                            </svg>
+                            <span v-if="!display">Attach a presentation image</span>
+
+                        </div>
+
                         <input id="file-upload" class="hidden" type="file" @change="onUpload">
-                        <svg v-if="!display" class="w-20" viewBox="0 0 24 24" fill="none"
-                             xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path d="M12 15L12 2M12 2L15 5.5M12 2L9 5.5" stroke="#1C274C" stroke-width="1.5"
-                                      stroke-linecap="round"
-                                      stroke-linejoin="round"></path>
-                                <path
-                                        d="M8 22.0002H16C18.8284 22.0002 20.2426 22.0002 21.1213 21.1215C22 20.2429 22 18.8286 22 16.0002V15.0002C22 12.1718 22 10.7576 21.1213 9.8789C20.3529 9.11051 19.175 9.01406 17 9.00195M7 9.00195C4.82497 9.01406 3.64706 9.11051 2.87868 9.87889C2 10.7576 2 12.1718 2 15.0002L2 16.0002C2 18.8286 2 20.2429 2.87868 21.1215C3.17848 21.4213 3.54062 21.6188 4 21.749"
-                                        stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path>
-                            </g>
-                        </svg>
                     </label>
+                    <div class="flex items-center justify-between  gap-4 my-2" v-if="display">
+                        <Image :src="display" alt="Image" width="40" preview/>
+                        <span>{{ filename }}</span>
+                        <i class="pi pi-trash text-red-800" @click="display=''"></i>
+                    </div>
+                </div>
+                <div>
+                    <Select v-model="post.category_id" fluid :options="storeCate.categories" optionLabel="name"
+                            placeholder="Select a Cate"
+                            class="w-full md:w-56"/>
                 </div>
             </div>
             <div class="flex justify-end gap-2">
@@ -58,34 +67,72 @@
                 <Editor v-model="editPost.description" editorStyle="height: 320px"/>
 
             </div>
+            <!--            <div class="flex items-center gap-4 mb-8">
+														<Select v-model="editPost.category_id" option-value="id" :options="storeCate.categories"
+																		optionLabel="name"
+																		placeholder="Select a Cate"
+																		class="w-full md:w-56"/>
+												</div>-->
             <div class="flex items-center gap-4 mb-8">
-                <Select v-model="editPost.category_id" option-value="id" :options="storeCate.categories"
-                        optionLabel="name"
-                        placeholder="Select a Cate"
-                        class="w-full md:w-56"/>
-            </div>
-            <div class="flex items-center gap-4 mb-8">
-                <label for="file-upload"
-                       class="cursor-pointer  text-white px-4 py-2 rounded-md transition">
-                    <Image v-if="editPost.image" :src="image  ? image  : editPost.image" alt="Image" width="250"
-                           preview/>
-                    <input id="file-upload" type="file" class="hidden" @change="onUploadUpdate">
-                    <svg v-if="!editPost.image" class="w-20" viewBox="0 0 24 24" fill="none"
-                         xmlns="http://www.w3.org/2000/svg">
-                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                        <g id="SVGRepo_iconCarrier">
-                            <path d="M12 15L12 2M12 2L15 5.5M12 2L9 5.5" stroke="#1C274C" stroke-width="1.5"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"></path>
-                            <path
-                                    d="M8 22.0002H16C18.8284 22.0002 20.2426 22.0002 21.1213 21.1215C22 20.2429 22 18.8286 22 16.0002V15.0002C22 12.1718 22 10.7576 21.1213 9.8789C20.3529 9.11051 19.175 9.01406 17 9.00195M7 9.00195C4.82497 9.01406 3.64706 9.11051 2.87868 9.87889C2 10.7576 2 12.1718 2 15.0002L2 16.0002C2 18.8286 2 20.2429 2.87868 21.1215C3.17848 21.4213 3.54062 21.6188 4 21.749"
-                                    stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path>
-                        </g>
-                    </svg>
-                </label>
+                <div class="flex-1 border bg-[#F8FAFC] flex items-center h-10  px-2 <!--justify-{{ !display ? 'center': 'start'}}--> border-gray-200 rounded-md w-44">
+                    <label for="file-upload"
+                           class="cursor-pointer  text-black py-2  rounded-md transition">
+                        <div class="flex items-center gap-2">
+                            <svg v-if="!editPost.image" class="w-5" viewBox="0 0 24 24" fill="none"
+                                 xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path d="M12 15L12 2M12 2L15 5.5M12 2L9 5.5" stroke="#1C274C" stroke-width="1.5"
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"></path>
+                                    <path
+                                            d="M8 22.0002H16C18.8284 22.0002 20.2426 22.0002 21.1213 21.1215C22 20.2429 22 18.8286 22 16.0002V15.0002C22 12.1718 22 10.7576 21.1213 9.8789C20.3529 9.11051 19.175 9.01406 17 9.00195M7 9.00195C4.82497 9.01406 3.64706 9.11051 2.87868 9.87889C2 10.7576 2 12.1718 2 15.0002L2 16.0002C2 18.8286 2 20.2429 2.87868 21.1215C3.17848 21.4213 3.54062 21.6188 4 21.749"
+                                            stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path>
+                                </g>
+                            </svg>
+                            <span v-if="!editPost.image">Attach a presentation image</span>
 
+                        </div>
+
+                        <input id="file-upload" class="hidden" type="file" @change="onUploadUpdate">
+                    </label>
+                    <div class="flex items-center justify-between  gap-4 my-2" v-if="editPost.image">
+                        <Image v-if="editPost.image" :src="image  ? image  : editPost.image" alt="Image" width="40"
+                               preview/>
+                        <span>{{ editPost.image }}</span>
+                        <i class="pi pi-trash text-red-800" @click="editPost.image=''"></i>
+                    </div>
+                </div>
+                <div>
+                    <Select v-model="editPost.category_id" option-value="id" :options="storeCate.categories"
+                            optionLabel="name"
+                            placeholder="Select a Cate"
+                            class="w-full md:w-56"/>
+                </div>
             </div>
+            <!--            <div class="flex items-center gap-4 mb-8">
+														<label for="file-upload"
+																	 class="cursor-pointer  text-white px-4 py-2 rounded-md transition">
+																<Image v-if="editPost.image" :src="image  ? image  : editPost.image" alt="Image" width="250"
+																			 preview/>
+																<input id="file-upload" type="file" class="hidden" @change="onUploadUpdate">
+																<svg v-if="!editPost.image" class="w-20" viewBox="0 0 24 24" fill="none"
+																		 xmlns="http://www.w3.org/2000/svg">
+																		<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+																		<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+																		<g id="SVGRepo_iconCarrier">
+																				<path d="M12 15L12 2M12 2L15 5.5M12 2L9 5.5" stroke="#1C274C" stroke-width="1.5"
+																							stroke-linecap="round"
+																							stroke-linejoin="round"></path>
+																				<path
+																								d="M8 22.0002H16C18.8284 22.0002 20.2426 22.0002 21.1213 21.1215C22 20.2429 22 18.8286 22 16.0002V15.0002C22 12.1718 22 10.7576 21.1213 9.8789C20.3529 9.11051 19.175 9.01406 17 9.00195M7 9.00195C4.82497 9.01406 3.64706 9.11051 2.87868 9.87889C2 10.7576 2 12.1718 2 15.0002L2 16.0002C2 18.8286 2 20.2429 2.87868 21.1215C3.17848 21.4213 3.54062 21.6188 4 21.749"
+																								stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path>
+																		</g>
+																</svg>
+														</label>
+
+												</div>-->
             <div>
 
             </div>
@@ -233,9 +280,12 @@ const editPost = ref({
 });
 let image = ref()
 const display = ref()
+const filename = ref()
+
 const onUpload = (event: any) => {
     image.value = event.target.files[0];
     display.value = URL.createObjectURL(event.target.files[0]);
+    filename.value = event.target.files[0].name;
 };
 const onUploadUpdate = (event: any) => {
     editPost.value.image = event.target.files[0];
